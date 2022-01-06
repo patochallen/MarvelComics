@@ -1,7 +1,6 @@
 package com.patofch.marvelcomics.core.di
 
-import android.app.Application
-import androidx.room.Room
+import com.patofch.marvelcomics.data.data_source.api.CharacterService
 import com.patofch.marvelcomics.data.data_source.db.MarvelComicsDatabase
 import com.patofch.marvelcomics.data.repository.CharacterRepositoryImpl
 import com.patofch.marvelcomics.domain.repository.CharacterRepository
@@ -18,13 +17,21 @@ object CharacterModule {
 
     @Provides
     @Singleton
-    fun providesCharacterRepository(marvelComicsDatabase: MarvelComicsDatabase): CharacterRepository {
-        return CharacterRepositoryImpl(marvelComicsDatabase.characterDao)
+    fun providesCharacterRepository(
+        marvelComicsDatabase: MarvelComicsDatabase,
+        characterService: CharacterService
+    ): CharacterRepository {
+        return CharacterRepositoryImpl(
+            characterDao = marvelComicsDatabase.characterDao,
+            characterService = characterService
+        )
     }
 
     @Provides
     @Singleton
-    fun providesCharacterUseCases(characterRepository: CharacterRepository): CharacterUseCases {
+    fun providesCharacterUseCases(
+        characterRepository: CharacterRepository
+    ): CharacterUseCases {
         return CharacterUseCases(
             getCharacters = GetCharacters(characterRepository),
             getCharacterById = GetCharacterById(characterRepository),

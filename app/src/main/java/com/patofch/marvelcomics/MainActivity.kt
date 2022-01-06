@@ -7,6 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -104,21 +105,23 @@ private fun Loader() {
 private fun CharacterList(items: List<Character>) {
     Column {
         LazyColumn(
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.Cyan)
+                .background(Color.Cyan),
+            verticalArrangement = Arrangement.SpaceAround
         ) {
-            items(items) {
-                Spacer(modifier = Modifier.height(5.dp))
-                Card(
-                    modifier = Modifier.padding(horizontal = 5.dp),
-                    shape = RoundedCornerShape(15.dp)
+            val rows = items.withIndex()
+                .groupBy { it.index / 3 }
+                .map { it.value.map { it.value } }
+            items(rows) { row->
+                Spacer(modifier = Modifier.height(20.dp))
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp),
+                    horizontalArrangement = Arrangement.SpaceAround
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .padding(10.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    items(row){
                         Image(
                             painter = rememberImagePainter(
                                 data = it.imageUrl,
@@ -127,17 +130,39 @@ private fun CharacterList(items: List<Character>) {
                                 }
                             ),
                             contentDescription = null,
-                            modifier = Modifier.size(50.dp)
-                        )
-                        Text(
-                            text = it.name,
-                            modifier = Modifier
-                                .padding(start = 15.dp)
-                                .weight(1f),
-                            fontSize = 25.sp
+                            modifier = Modifier.size(100.dp)
                         )
                     }
                 }
+//                Spacer(modifier = Modifier.height(5.dp))
+//                Card(
+//                    modifier = Modifier.padding(horizontal = 5.dp),
+//                    shape = RoundedCornerShape(15.dp)
+//                ) {
+//                    Row(
+//                        modifier = Modifier
+//                            .padding(10.dp),
+//                        verticalAlignment = Alignment.CenterVertically
+//                    ) {
+//                        Image(
+//                            painter = rememberImagePainter(
+//                                data = it.imageUrl,
+//                                builder = {
+//                                    transformations(CircleCropTransformation())
+//                                }
+//                            ),
+//                            contentDescription = null,
+//                            modifier = Modifier.size(50.dp)
+//                        )
+//                        Text(
+//                            text = it.name,
+//                            modifier = Modifier
+//                                .padding(start = 15.dp)
+//                                .weight(1f),
+//                            fontSize = 25.sp
+//                        )
+//                    }
+//                }
             }
         }
     }
